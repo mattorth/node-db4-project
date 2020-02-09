@@ -5,45 +5,21 @@ function getRecipes() {
 }
 
 function getShoppingList(recipe_id) {
-
+    return db('recipies')
+        .join('ingredients_measurements_recipies_quantities as imrq', 'ingredient_list as il')
+        .select('recipies.recipe_name', 'il.ingredient_name', 'imrq.quantity')
+        .where({ imrq.recipe_id: recipe_id });
 }
 
 function getInstructions(recipe_id) {
-
+    return db('instructions')
+        .join('recipies')
+        .select('instructions.instruction', 'recipies.recipe_name')
+        .where({ instructions.recipe_id: recipe_id });
 }
-function find() {
-    return db('schemes');
-}
-
-function findById(id) {
-    return db('schemes').where({ id }).first();
-}
-
-function findSteps(id) {
-    return db('schemes')
-        .join('steps')
-        .select('steps.scheme_id', 'schemes.scheme_name', 'steps.step_number', 'steps.instructions')
-        .where({ scheme_id: id });
-}
-
-function add(schemeData) {
-    return db('schemes').insert(schemeData);
-}
-
-function update(changes, id) {
-    return db('schemes').where({ id }).update(changes);
-}
-
-function remove(id) {
-    return db('schemes').where({ id }).del()
-}
-
 
 module.exports = {
-    find,
-    findById,
-    findSteps,
-    add,
-    update,
-    remove
+    getRecipes,
+    getShoppingList,
+    getInstructions
 }
